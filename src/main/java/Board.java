@@ -7,6 +7,14 @@ public class Board {
         this.board = board;
     }
 
+    public void resetBoard() {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                board[i][j] = 0;
+            }
+        }
+    }
+
     public void printBoard() {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -14,6 +22,7 @@ public class Board {
             }
             System.out.println();
         }
+        System.out.println();
     }
 
     public boolean isFull() {
@@ -28,6 +37,10 @@ public class Board {
     public boolean isValidPoint(int x, int y) {
         if (x >= 0 && x < height && y >=0 && y < width) return true;
         return false;
+    }
+
+    public boolean isBlankPoint(int x, int y) {
+        return isValidPoint(x, y) && board[x][y] == 0;
     }
 
     public boolean isValidPoint(Point p) {
@@ -49,5 +62,19 @@ public class Board {
             }
         }
         return null;
+    }
+
+    public boolean setPiece(Point pos, Piece piece) {
+        for (Point p: piece.getLocates()) {
+            int nx = pos.getX() + p.getX();
+            int ny = pos.getY() + p.getY();
+            if (!isBlankPoint(nx, ny)) return false;
+        }
+        for (Point p: piece.getLocates()) {
+            int nx = pos.getX() + p.getX();
+            int ny = pos.getY() + p.getY();
+            board[nx][ny] = piece.id;
+        }
+        return true;
     }
 }
