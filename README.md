@@ -1,0 +1,2 @@
+# SmartGame
+solution for smartgame
