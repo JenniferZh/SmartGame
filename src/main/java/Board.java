@@ -18,7 +18,7 @@ public class Board {
     public void printBoard() {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                System.out.print(board[i][j]+" ");
+                System.out.print(board[i][j]+"\t");
             }
             System.out.println();
         }
@@ -62,6 +62,26 @@ public class Board {
             }
         }
         return null;
+    }
+
+    public Board makeCopy() {
+        int[][] copyBoard = new int[5][11];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                copyBoard[i][j] = board[i][j];
+            }
+        }
+        Board newBoard = new Board(copyBoard);
+        return newBoard;
+    }
+
+    public boolean canSet(Point pos, Piece piece) {
+        for (Point p: piece.getLocates()) {
+            int nx = pos.getX() + p.getX();
+            int ny = pos.getY() + p.getY();
+            if (!isBlankPoint(nx, ny)) return false;
+        }
+        return true;
     }
 
     public boolean setPiece(Point pos, Piece piece) {

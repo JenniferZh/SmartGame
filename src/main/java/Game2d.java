@@ -78,38 +78,49 @@ public class Game2d {
     }
 
     public void generateSolution() {
+        solutionHelper(board, initUsed);
+    }
 
-
+    private boolean allUsed(boolean[] used) {
+        boolean result = true;
+        for (boolean use: used) result = result && use;
+        return result;
     }
 
     private void solutionHelper(Board curboard, boolean[] used) {
+        //curboard.printBoard();
+        if (solutionBoard != null) return;
+
         if (curboard.isFull()) {
             this.solutionBoard = curboard;
+            //curboard.printBoard();
             return;
         }
-        Point leftUpCorner = board.getCorner();
+        if (allUsed(used)) return;
+        Point leftUpCorner = curboard.getCorner();
         for (int i = 0; i < pieces.size(); i++) {
             if (used[i]) continue;
-            
+            Piece tryPiece = pieces.get(i);
+            for (Piece allDirTryPiece: tryPiece.getAllDirections()) {
+                for (Point leftup: allDirTryPiece.getLeftUps()) {
+                    Piece finaltry =  allDirTryPiece.formatWithGivenPoint(leftup);
+                    if (curboard.canSet(leftUpCorner, finaltry)) {
+                        Board newboard = curboard.makeCopy();
+                        newboard.setPiece(leftUpCorner, finaltry);
+                        boolean[] newused = new boolean[piecesMap.length];
+                        for (int t = 0; t < piecesMap.length; t++) newused[t] = used[t];
+                        newused[i] = true;
+                        solutionHelper(newboard, newused);
+                    }
+                }
+            }
+
         }
     }
 
     public static void main(String[] args) throws Exception{
         Game2d game = new Game2d();
-        for(Piece p: game.pieces.get(1).getAllDirections()) {
-            game.board.resetBoard();
-            game.board.setPiece(new Point(2, 4), p);
-            for (Point pp: p.getLeftUps()) {
-                System.out.println((pp.getX())+" "+ (pp.getY()));
-
-                p.formatWithGivenPoint(pp);
-                //p.print();
-                game.board.resetBoard();
-                game.board.setPiece(new Point(2, 4), p);
-                //System.out.println((pp.getX()+2)+" "+ (pp.getY()+4));
-            }
-            game.board.printBoard();
-        }
-        game.board.getCorner().print();
+        game.generateSolution();
+        game.solutionBoard.printBoard();
     }
 }

@@ -37,14 +37,16 @@ public class Piece {
         return result;
     }
 
-    public void formatWithGivenPoint(Point p) {
-        if (p.getX() == 0 && p.getY() == 0) return;
+    public Piece formatWithGivenPoint(Point p) {
+        if (p.getX() == 0 && p.getY() == 0) return this;
+        Set<Point> pointSet = new HashSet<Point>();
         int offsetX = 0 - p.getX();
         int offsetY = 0 - p.getY();
         for (Point piecePoint: locates) {
-            piecePoint.setX(piecePoint.getX()+offsetX);
-            piecePoint.setY(piecePoint.getY()+offsetY);
+            pointSet.add(new Point(piecePoint.getX()+offsetX, piecePoint.getY()+offsetY));
         }
+        Piece formatPice = new Piece(this, pointSet);
+        return formatPice;
     }
 
     public void print() {
